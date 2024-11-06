@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 export default function AccountNavigation() {
+  
   return (
     <div id="wd-account-navigation" className="wd list-group fs-5 rounded-0">
     <Link to={`/Kanbas/Account/Signin`} className="list-group-item active border border-0"> Sign in </Link> 
