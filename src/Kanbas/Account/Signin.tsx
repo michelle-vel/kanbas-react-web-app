@@ -15,7 +15,6 @@ export default function Signin() {
     dispatch(setCurrentUser(user));
     navigate("/Kanbas/Dashboard");
   };
-
   return (
     <div id="wd-signin-screen">
       <h1>Sign in</h1>

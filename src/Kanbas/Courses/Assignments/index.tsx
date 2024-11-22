@@ -10,17 +10,12 @@ import { useDispatch } from "react-redux";
 import AssignmentEditor from "./Editor";
 import { FaTrash } from "react-icons/fa";
 
-export default function Assignments({assignmentId, deleteAssignment, editAssignment}: {
-  assignmentId: string; deleteAssignment: (assignmentId: string) => void;
-  editAssignment: (assignmentId: string) => void
-}) {
+export default function Assignments() {
   const { cid } = useParams();
   const assignments = db.assignments;
   const filteredAssignments = assignments.filter(
     (assignment) => assignment.course === cid
   );
-  const navigate = useNavigate();
-
 
   return (
     <div id="wd-assignments">
@@ -40,9 +35,8 @@ export default function Assignments({assignmentId, deleteAssignment, editAssignm
           <button className="wd-add-assignment-group btn btn-outline-secondary me-2">
             <AiOutlinePlus /> Group
           </button>
-          <button className="wd-add-assignment btn btn-danger" onClick={() => navigate(`/Kanbas/Courses/${cid}/Assignments/new`)}>
+          <button className="wd-add-assignment btn btn-danger">
             <AiOutlinePlus /> Assignment
-            
           </button>
         </div>
       </div>
@@ -98,7 +92,7 @@ export default function Assignments({assignmentId, deleteAssignment, editAssignm
                   <div className="d-flex align-items-center">
                     <FaCheckCircle className="text-success fs-4 me-3" />
                     <IoEllipsisVertical className="text-muted fs-4" />
-                    <FaTrash className="text-danger me-2 mb-1" onClick={() => deleteAssignment(assignmentId)}/>
+                    {/* <FaTrash className="text-danger me-2 mb-1" onClick={() => deleteAssignment(assignmentId)}/> */}
                   </div>
                 </li>
               </ul>
