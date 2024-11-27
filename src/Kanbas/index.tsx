@@ -46,8 +46,8 @@ export default function Kanbas() {
     })
   );};
   return (
-    <Session>
     <div id="wd-kanbas">
+          <Session>
             <KanbasNavigation />
             <div className="wd-main-content-offset p-3">
             <Routes>
@@ -67,7 +67,7 @@ export default function Kanbas() {
               <Route path="/Inbox" element={<h1>Inbox</h1>} />
             </Routes>
             </div>
+            </Session>
     </div>
-    </Session>
 );}
 

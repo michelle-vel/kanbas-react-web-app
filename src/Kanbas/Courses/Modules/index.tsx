@@ -73,7 +73,7 @@ export default function Modules() {
         <ModuleControlButtons
                 moduleId={module._id}
                 deleteModule={(moduleId) => removeModule(moduleId)}
-              editModule={(moduleId) => dispatch(editModule(moduleId))} />
+                editModule={(moduleId) => dispatch(editModule(moduleId))} />
 
             </div>
             {module.lessons && (
