@@ -6,16 +6,76 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import "./styles.css"
 import { useNavigate, useParams } from "react-router";
 import * as db from "../../Database";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AssignmentEditor from "./Editor";
 import { FaTrash } from "react-icons/fa";
+import {
+  addAssignment as addAssignmentAction,
+  deleteAssignment as deleteAssignmentAction, setAssignments,
+} from "./reducer";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import * as assignmentsClient from "./client";
+import * as coursesClient from "../client";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const assignments = db.assignments;
-  const filteredAssignments = assignments.filter(
-    (assignment) => assignment.course === cid
-  );
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [showDialog, setShowDialog] = useState(false);
+  const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
+
+  const assignments =
+    useSelector((state: any) => state.assignmentsReducer.assignments) || [];
+    const { currentUser } = useSelector((state: any) => state.accountReducer);
+
+  const fetchAssignments = async () => {
+    try {
+      const assignments = await coursesClient.findAssignmentsForCourse(
+        cid as string
+      );
+      dispatch(setAssignments(assignments));
+    } catch (error) {
+      console.error("Error fetching assignments:", error);
+    }
+  };
+
+  const removeAssignment = async (assignmentId: string) => {
+    try {
+      await assignmentsClient.deleteAssignment(assignmentId);
+      dispatch(deleteAssignmentAction(assignmentId));
+    } catch (error) {
+      console.error("Error deleting assignment:", error);
+    }
+  };
+
+  const handleDeleteClick = (assignment: any) => {
+    setAssignmentToDelete(assignment);
+    setShowDialog(true);
+  };
+
+  const confirmDelete = () => {
+    if (assignmentToDelete) {
+      removeAssignment(assignmentToDelete._id);
+    }
+    setShowDialog(false);
+  };
+
+  const cancelDelete = () => {
+    setShowDialog(false);
+    setAssignmentToDelete(null);
+  };
+
+  const handleAddAssignmentClick = () => {
+    navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
+  };
+
+  useEffect(() => {
+    fetchAssignments();
+  }, [cid, dispatch]);
+
+
 
   return (
     <div id="wd-assignments">
@@ -30,7 +90,6 @@ export default function Assignments() {
             className="wd-search-assignment form-control"
             placeholder="Search..."
           />
-        </div>
         <div>
           <button className="wd-add-assignment-group btn btn-outline-secondary me-2">
             <AiOutlinePlus /> Group
@@ -56,52 +115,66 @@ export default function Assignments() {
                   <IoEllipsisVertical className="fs-4" />
                 </div>
               </div>
-              
-              {filteredAssignments.length > 0 ? (
-                filteredAssignments.map((assignment) => (
+                <ul className="wd-assignment-list list-group rounded-0">
 
-              <ul className="list-group mt-3 rounded-0">
-                <li className="wd-assignment-list-item list-group-item p-3 d-flex justify-content-between align-items-center">
-                  <div className="d-flex align-items-center">
-                    <BsGripVertical className="me-2 fs-3" />
-                    <AiOutlineFileText className="me-2 text-success fs-3" />
-                    <div>
-                      <h5>
-                        <a
-                          href={`#/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
-                          className="wd-assignment-link text-decoration-none text-dark"
-                        >
-                          {assignment.title}
-                        </a>
-                      </h5>
-                     <div className="text-muted">
-                      <span className="text-danger">Multiple Modules</span>
-                      <span className="mx-1">|</span>
-                      <span className="fw-bold">Not available until</span>
-                      <span className="ms-1">May 6 at 12:00am</span>
-                      <span className="mx-1">|</span>
-                      <br/>
-                      <span className="fw-bold">Due</span>
-                      <span className="ms-1">May 13 at 11:59pm</span>
-                      <span className="mx-1">|</span>
-                      <span>100 pts</span>
-                   </div>
-                    </div>
-                  </div>
-
-                  <div className="d-flex align-items-center">
-                    <FaCheckCircle className="text-success fs-4 me-3" />
-                    <IoEllipsisVertical className="text-muted fs-4" />
-                    {/* <FaTrash className="text-danger me-2 mb-1" onClick={() => deleteAssignment(assignmentId)}/> */}
-                  </div>
-                </li>
-              </ul>
-              ))
-            ) : (
-              <li className="list-group-item">No assignments found.</li>
-            )}
+            {assignments.map((assignment: any) => (
+              <li
+                key={assignment._id}
+                className="list-group-item d-flex justify-content-between align-items-center"
+              >
+                <Link
+                  to={`/Kanbas/Courses/${cid}/Assignments/${assignment._id}`}
+                >
+                  {assignment.title}
+                </Link>
+                {currentUser.role === "FACULTY" && (
+                  <FaTrash
+                    className="text-danger cursor-pointer"
+                    onClick={() => handleDeleteClick(assignment)}
+                  />
+                )}
+              </li>
+            ))}
+          </ul>
         </li>
       </ul>
+
+      {showDialog && (
+        <div className="modal fade show" style={{ display: "block" }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Confirm Delete</h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={cancelDelete}
+                ></button>
+              </div>
+              <div className="modal-body">
+                Are you sure you want to delete this assignment?
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={cancelDelete}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-danger"
+                  onClick={confirmDelete}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
-  );
-}
+        </div>
+    );
+  }

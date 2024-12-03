@@ -1,19 +1,85 @@
-import React from 'react';
+import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { FaChevronDown } from 'react-icons/fa';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import * as db from "../../Database";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addAssignment as addAssignmentAction,
+  updateAssignment as updateAssignmentAction,
+} from "./reducer";
+import * as assignmentsClient from "./client";
+
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const assignments = db.assignments;
+  const assignments =
+    useSelector((state: any) => state.assignmentsReducer.assignments) || [];
+  
+    const assignment = assignments.find(
+      (assignment: any) => assignment._id === aid
+    );
 
-  const assignment = assignments.find(assignment => assignment._id === aid);
+  const [title, setTitle] = useState(
+    assignment ? assignment.title : ""
+  );
+  const [description, setDescription] = useState(
+    assignment ? assignment.description : ""
+  );
+  const [points, setPoints] = useState(
+    assignment ? assignment.points : 0
+  );
+  const [dueDate, setDueDate] = useState(
+    assignment ? assignment.dueDate : ""
+  );
+  const [availableFrom, setAvailableFrom] = useState(
+    assignment ? assignment.availableFrom : ""
+  );
+  const [availableUntil, setAvailableUntil] = useState(
+    assignment ? assignment.availableUntil : ""
+  );
 
-  if (!assignment) {
-    return <div>Assignment not found</div>;
-  }
+  const isNewAssignment = !assignment;
+  
+  const handleSave = async () => {
+    const updatedAssignment = {
+      _id: aid || new Date().getTime().toString(),
+      title,
+      description,
+      points,
+      dueDate,
+      availableFromDate: availableFrom,
+      availableUntilDate: availableUntil,
+      course: cid,
+    };
+
+    try {
+      if (isNewAssignment) {
+        const createdAssignment =
+          await assignmentsClient.createAssignmentForCourse(
+            cid!,
+            updatedAssignment
+          );
+        dispatch(addAssignmentAction(createdAssignment));
+      } else {
+        const updated = await assignmentsClient.updateAssignment(
+          updatedAssignment
+        );
+        dispatch(updateAssignmentAction(updated));
+      }
+      navigate(`/Kanbas/Courses/${cid}/Assignments`);
+    } catch (error) {
+      console.error("Error saving assignment:", error);
+    }
+  };
+
+  const handleCancel = () => {
+    navigate(`/Kanbas/Courses/${cid}/Assignments`);
+  };
+
 
   return (
     <div id="wd-assignments-editor" className="container mt-4">
@@ -22,7 +88,7 @@ export default function AssignmentEditor() {
         id="wd-name"
         value={assignment.title}
         className="form-control mb-3"
-        readOnly
+        onChange={(e) => setTitle(e.target.value)}
       />
 
       <textarea
@@ -30,7 +96,7 @@ export default function AssignmentEditor() {
         className="form-control mb-4"
         rows={5}
         value={assignment.description}
-        readOnly
+        onChange={(e) => setDescription(e.target.value)}
       />
 
       {/* Points Row */}
@@ -45,7 +111,7 @@ export default function AssignmentEditor() {
             id="wd-points"
             value={assignment.points}
             className="form-control"
-            readOnly
+            onChange={(e) => setPoints(Number(e.target.value))}
           />
         </div>
       </div>
@@ -132,8 +198,8 @@ export default function AssignmentEditor() {
             id="wd-due-date"
             value={assignment.dueDate}
             className="form-control"
-            readOnly
-          />
+            onChange={(e) => setDueDate(e.target.value)}
+            />
         </div>
       </div>
 
@@ -148,7 +214,7 @@ export default function AssignmentEditor() {
             id="wd-available-from"
             value={assignment.availableFrom}
             className="form-control"
-            readOnly
+            onChange={(e) => setAvailableFrom(e.target.value)}
           />
         </div>
         <div className="col-md-5">
@@ -160,22 +226,36 @@ export default function AssignmentEditor() {
             id="wd-available-until"
             value={assignment.availableUntil}
             className="form-control"
-            readOnly
+            onChange={(e) => setAvailableUntil(e.target.value)}
           />
         </div>
       </div>
 
       <hr />
 
-        {/* Cancel and Save Buttons */}
-        <div className="d-flex justify-content-end">
+        {/* Cancel and Save Buttons
+        <div className="d-flex justify-content-end" onClick={(handleCancel)}>
           <Link to={`/Kanbas/Courses/${cid}/Assignments`} className="btn btn-secondary me-2">
             Cancel
           </Link>
           <Link to={`/Kanbas/Courses/${cid}/Assignments`} className="btn btn-danger">
             Save
           </Link>
+        </div> */}
+
+        <div className="d-flex justify-content-end">
+          <button
+            type="button"
+            className="btn btn-secondary me-2"
+            onClick={handleCancel}
+          >
+            Cancel
+          </button>
+          <button type="button" className="btn btn-danger" onClick={handleSave}>
+            Save
+          </button>
         </div>
+
     </div>
   );
 }
