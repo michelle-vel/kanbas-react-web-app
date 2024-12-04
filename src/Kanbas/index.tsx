@@ -10,6 +10,7 @@ import Session from "./Account/Session";
 import * as userClient from "./Account/client";
 import { useSelector } from "react-redux";
 import * as courseClient from "./Courses/client";
+import enrollmentsData from "./Database/enrollments.json";
 
 export default function Kanbas() {
   const [courses, setCourses] = useState<any[]>([]);
@@ -25,7 +26,8 @@ export default function Kanbas() {
   useEffect(() => {
     fetchCourses();
   }, [currentUser]);
-  
+  const [enrollments, setEnrollments] = useState(enrollmentsData);
+
   const [course, setCourse] = useState<any>({
     _id: "1234", name: "New Course", number: "New Number",
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
@@ -45,6 +47,25 @@ export default function Kanbas() {
         else { return c; }
     })
   );};
+  const handleEnroll = (userId: string, courseId: string) => {
+    const newEnrollment = {
+      _id: new Date().getTime().toString(),
+      user: userId,
+      course: courseId,
+    };
+    setEnrollments((prevEnrollments) => [...prevEnrollments, newEnrollment]);
+  };
+
+  const handleUnenroll = (userId: string, courseId: string) => {
+    setEnrollments((prevEnrollments) =>
+      prevEnrollments.filter(
+        (enrollment) =>
+          enrollment.user !== userId || enrollment.course !== courseId
+      )
+    );
+  };
+
+
   return (
     <div id="wd-kanbas">
           <Session>
@@ -55,12 +76,16 @@ export default function Kanbas() {
               <Route path="/Account/*" element={<Account />} />
               <Route path="/Dashboard" element={<ProtectedRoute>   
               <Dashboard
-              courses={courses}
-              course={course}
-              setCourse={setCourse}
-              addNewCourse={addNewCourse}
-              deleteCourse={deleteCourse}
-              updateCourse={updateCourse}/></ProtectedRoute>
+                courses={courses}
+                course={course}
+                setCourse={setCourse}
+                addNewCourse={addNewCourse}
+                deleteCourse={deleteCourse}
+                updateCourse={updateCourse} 
+                enrollments={enrollments} 
+                handleEnroll={handleEnroll}
+                handleUnenroll={handleUnenroll}/>
+                </ProtectedRoute>
 } />
               <Route path="/Courses/:cid/*" element={<ProtectedRoute><Courses courses={courses} /></ProtectedRoute>} />
               <Route path="/Calendar" element={<h1>Calendar</h1>} />

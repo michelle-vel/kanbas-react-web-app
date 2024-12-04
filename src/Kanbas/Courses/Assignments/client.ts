@@ -18,25 +18,25 @@ export const deleteAssignment = async (assignmentId: string) => {
 
 
 
-export const createAssignmentForCourse = async (
-  courseId: string,
-  newAssignment: {
-    title: string;
-    description: string;
-    points: number;
-    dueDate: string;
-    availableFromDate: string;
-    availableUntilDate: string;
-  }
-) => {
-  try {
-    const { data } = await axiosWithCredentials.post(
-      `${REMOTE_SERVER}/api/courses/${courseId}/assignments`, // Corrected URL path
-      newAssignment
-    );
-    return data;
-  } catch (error) {
-    console.error("Error creating assignment:", error);
-    throw error;
-  }
-};
+// export const createAssignmentForCourse = async (
+//   courseId: string,
+//   newAssignment: {
+//     title: string;
+//     description: string;
+//     points: number;
+//     dueDate: string;
+//     availableFromDate: string;
+//     availableUntilDate: string;
+//   }
+// ) => {
+//   try {
+//     const { data } = await axiosWithCredentials.post(
+//       `${REMOTE_SERVER}/api/courses/${courseId}/assignments`, // Corrected URL path
+//       newAssignment
+//     );
+//     return data;
+//   } catch (error) {
+//     console.error("Error creating assignment:", error);
+//     throw error;
+//   }
+// };

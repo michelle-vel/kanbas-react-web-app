@@ -7,6 +7,7 @@ import {
   setAssignments,
 } from "./reducer";
 import * as assignmentsClient from "./client";
+import * as coursesClient from "../client";
 
 export default function AssignmentEditor() {
   const { cid, aid } = useParams();
@@ -80,7 +81,7 @@ export default function AssignmentEditor() {
     try {
       if (isNewAssignment) {
         const createdAssignment =
-          await assignmentsClient.createAssignmentForCourse(
+          await coursesClient.createAssignmentForCourse(
             cid!,
             updatedAssignment
           );
