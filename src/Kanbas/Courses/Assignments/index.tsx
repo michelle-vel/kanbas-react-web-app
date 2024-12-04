@@ -1,34 +1,30 @@
-import { AiOutlineFileText, AiOutlinePlus } from "react-icons/ai";
-import { BsGripVertical } from "react-icons/bs";
-import { FaCheckCircle } from "react-icons/fa";
-import { FaSearch } from "react-icons/fa";
-import { IoEllipsisVertical } from "react-icons/io5";
-import "./styles.css"
-import { useNavigate, useParams } from "react-router";
-import * as db from "../../Database";
-import { useDispatch, useSelector } from "react-redux";
-import AssignmentEditor from "./Editor";
-import { FaTrash } from "react-icons/fa";
-import {
-  addAssignment as addAssignmentAction,
-  deleteAssignment as deleteAssignmentAction, setAssignments,
-} from "./reducer";
+import { useParams, Link, useNavigate } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import * as assignmentsClient from "./client";
+import { FaTrash } from "react-icons/fa6";
+import { BsGripVertical } from "react-icons/bs";
+import { IoMdArrowDropdown } from "react-icons/io";
+import { IoEllipsisVertical } from "react-icons/io5";
+import {
+  deleteAssignment as deleteAssignmentAction,
+  setAssignments,
+} from "./reducer";
 import * as coursesClient from "../client";
+import * as assignmentsClient from "./client";
+import SearchBar from "./SearchBar";
+import AssignmentButtons from "./AssignmentButtons";
 
 export default function Assignments() {
   const { cid } = useParams();
-  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const [showDialog, setShowDialog] = useState(false);
   const [assignmentToDelete, setAssignmentToDelete] = useState<any>(null);
 
   const assignments =
     useSelector((state: any) => state.assignmentsReducer.assignments) || [];
-    const { currentUser } = useSelector((state: any) => state.accountReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
 
   const fetchAssignments = async () => {
     try {
@@ -67,56 +63,47 @@ export default function Assignments() {
     setAssignmentToDelete(null);
   };
 
-  const handleAddAssignmentClick = () => {
-    navigate(`/Kanbas/Courses/${cid}/Assignments/new`);
-  };
-
   useEffect(() => {
     fetchAssignments();
   }, [cid, dispatch]);
 
-
-
   return (
-    <div id="wd-assignments">
-      {/* Search and Action Buttons */}
-      <div className="d-flex justify-content-between mb-3">
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
         <div className="input-group w-50">
-          <span className="input-group-text">
-            <FaSearch />
-          </span>
-          <input
-            type="text"
-            className="wd-search-assignment form-control"
-            placeholder="Search..."
-          />
-        <div>
-          <button className="wd-add-assignment-group btn btn-outline-secondary me-2">
-            <AiOutlinePlus /> Group
-          </button>
-          <button className="wd-add-assignment btn btn-danger">
-            <AiOutlinePlus /> Assignment
-          </button>
+          <SearchBar />
         </div>
+
+        {currentUser.role === "FACULTY" && (
+          <div className="d-flex">
+            <AssignmentButtons />
+          </div>
+        )}
       </div>
 
-      {/* Assignments List */}
-      <ul className="wd-assignment-list list-group rounded-0">
-            <li className="list-group-item p-3 mb-5 border-gray">
-              <div className="d-flex justify-content-between align-items-center bg-secondary p-3">
-                <div className="d-flex align-items-center">
-                  <BsGripVertical className="me-2 fs-3" />
-                  <span className="fw-bold">ASSIGNMENTS</span>
-                </div>
-                <div className="d-flex align-items-center">
-                  <span className="badge bg-light text-dark rounded-pill mx-2 px-3">
-                    40% of Total
-                  </span>
-                  <IoEllipsisVertical className="fs-4" />
-                </div>
-              </div>
-                <ul className="wd-assignment-list list-group rounded-0">
+      <ul className="list-group rounded-0" id="wd-modules">
+        <li
+          className="list-group-item p-0"
+          style={{ borderLeft: "5px solid #00a651" }}
+        >
+          <div className="wd-title p-3 bg-secondary d-flex justify-content-between align-items-center">
+            <div className="d-flex align-items-center">
+              <BsGripVertical className="me-2 fs-3" />
+              <IoMdArrowDropdown className="me-2" />
+              <h3 id="wd-assignments-title">ASSIGNMENTS</h3>
+            </div>
+            <div
+              id="wd-assignments-title"
+              className="d-flex align-items-center p-2"
+            >
+              <span className="badge bg-light text-dark me-2">
+                {assignments.length} Assignments
+              </span>
+              <IoEllipsisVertical />
+            </div>
+          </div>
 
+          <ul className="wd-assignment-list list-group rounded-0">
             {assignments.map((assignment: any) => (
               <li
                 key={assignment._id}
@@ -175,6 +162,5 @@ export default function Assignments() {
         </div>
       )}
     </div>
-        </div>
-    );
-  }
+  );
+}

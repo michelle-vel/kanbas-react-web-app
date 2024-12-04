@@ -39,7 +39,7 @@ export const createAssignmentForCourse = async (
   courseId: string,
   assignment: any
 ) => {
-  const response = await axios.post(
+  const response = await axiosWithCredentials.post(
     `${COURSES_API}/${courseId}/assignments`,
     assignment
   );
