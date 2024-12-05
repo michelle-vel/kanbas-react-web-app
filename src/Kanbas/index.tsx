@@ -17,7 +17,7 @@ export default function Kanbas() {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const fetchCourses = async () => {
     try {
-      const courses = await userClient.findMyCourses();
+      const courses = await courseClient.fetchAllCourses();
       setCourses(courses);
     } catch (error) {
       console.error(error);
@@ -33,7 +33,8 @@ export default function Kanbas() {
     startDate: "2023-09-10", endDate: "2023-12-15", description: "New Description",
   });
   const addNewCourse = async () => {
-    const newCourse = await userClient.createCourse(course);
+    // const newCourse = await userClient.createCourse(course);
+    const newCourse = await courseClient.createCourse(course);
     setCourses([ ...courses, newCourse ]);
   };
   const deleteCourse = async (courseId: string) => {
