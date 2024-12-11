@@ -1,0 +1,112 @@
+[
+    {
+      "_id": "QZ101",
+      "name": "Introduction to Rocket Propulsion",
+      "status": "Closed",
+      "dueDate": "2023-02-15",
+      "points": 20,
+      "questions": 10,
+      "course": "RS101",
+      "description": "This quiz tests the basics of propulsion theory, including Newton's laws of motion and their application to rocket engines."
+    },
+    {
+      "_id": "QZ102",
+      "name": "Rocket Propulsion Dynamics",
+      "status": "Closed",
+      "dueDate": "2023-04-15",
+      "points": 25,
+      "questions": 15,
+      "course": "RS101",
+      "description": "This quiz tests the basics of propulsion dynamics."
+    },
+    {
+      "_id": "QZ103",
+      "name": "Aerodynamics Basics",
+      "status": "Available",
+      "dueDate": "2023-03-10",
+      "points": 25,
+      "questions": 15,
+      "course": "RS102",
+      "description": "Covers key aerodynamic principles, such as lift, drag, and airfoil dynamics."
+    },
+    {
+      "_id": "QZ104",
+      "name": "Spacecraft Systems Overview",
+      "status": "Available",
+      "dueDate": "2023-04-01",
+      "points": 30,
+      "questions": 12,
+      "course": "RS103",
+      "description": "Focuses on spacecraft design fundamentals, including propulsion, power systems, and payload integration."
+    },
+    {
+      "_id": "QZ105",
+      "name": "Organic Chemistry Functional Groups",
+      "status": "Closed",
+      "dueDate": "2023-02-20",
+      "points": 15,
+      "questions": 8,
+      "course": "RS104",
+      "description": "Tests knowledge of organic functional groups, their structures, and their chemical reactions."
+    },
+    {
+      "_id": "QZ106",
+      "name": "Inorganic Chemistry: Metal Complexes",
+      "status": "Not Available",
+      "dueDate": "2023-03-15",
+      "points": 20,
+      "questions": 10,
+      "course": "RS105",
+      "description": "Examines the properties and bonding of coordination compounds and their applications."
+    },
+    {
+      "_id": "QZ107",
+      "name": "Physical Chemistry Thermodynamics",
+      "status": "Available",
+      "dueDate": "2023-04-20",
+      "points": 25,
+      "questions": 12,
+      "course": "RS106",
+      "description": "Tests understanding of thermodynamic laws and their application in physical chemistry."
+    },
+    {
+      "_id": "QZ108",
+      "name": "Elvish Linguistics Quiz",
+      "status": "Closed",
+      "dueDate": "2023-02-28",
+      "points": 10,
+      "questions": 5,
+      "course": "RS107",
+      "description": "A quiz covering the structure and grammar of Sindarin and Quenya."
+    },
+    {
+      "_id": "QZ109",
+      "name": "Inter-species Diplomacy in Middle-earth",
+      "status": "Available",
+      "dueDate": "2023-03-25",
+      "points": 30,
+      "questions": 15,
+      "course": "RS108",
+      "description": "Focuses on historical alliances and conflicts between Elves, Men, and Dwarves in Middle-earth."
+    },
+    {
+      "_id": "QZ110",
+      "name": "Magic in Middle-earth",
+      "status": "Not Available",
+      "dueDate": "2023-04-15",
+      "points": 35,
+      "questions": 18,
+      "course": "RS109",
+      "description": "Tests knowledge of magical practices, artifacts, and their influence on Middle-earth events."
+    },
+    {
+      "_id": "QZ111",
+      "name": "Ethical Foundations Quiz",
+      "status": "Closed",
+      "dueDate": "2023-02-12",
+      "points": 20,
+      "questions": 10,
+      "course": "RS117",
+      "description": "Explores moral teachings and ethical wisdom in Islamic traditions, with examples from the Quran and Hadith."
+    }
+  ]

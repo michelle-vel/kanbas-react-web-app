@@ -1,0 +1,109 @@
+[
+    {
+      "_id": "Q101",
+      "quizId": "QZ101",
+      "type": "Multiple Choice",
+      "title": "Basics of Rocket Propulsion",
+      "points": 5,
+      "question": "What is the primary principle of rocket propulsion?",
+      "choices": [
+        "Newton's First Law",
+        "Newton's Second Law",
+        "Newton's Third Law",
+        "Bernoulli's Principle"
+      ],
+      "correctAnswer": "Newton's Third Law"
+    },
+    {
+      "_id": "Q102",
+      "quizId": "QZ101",
+      "type": "True/False",
+      "title": "Rocket Propulsion T/F",
+      "points": 3,
+      "question": "Rocket propulsion is based on Newton's Second Law.",
+      "correctAnswer": "False"
+    },
+    {
+      "_id": "Q103",
+      "quizId": "QZ101",
+      "type": "Fill in the Blank",
+      "title": "Rocket Propulsion Terminology",
+      "points": 4,
+      "question": "The force exerted by a rocket engine is known as ______.",
+      "correctAnswers": ["thrust", "Thrust"]
+    },
+    {
+      "_id": "Q201",
+      "quizId": "QZ102",
+      "type": "Multiple Choice",
+      "title": "Rocket Dynamics",
+      "points": 10,
+      "question": "What is the equation for calculating thrust in rocket propulsion?",
+      "choices": [
+        "F = ma",
+        "T = mdot * Ve + (Pe - Pa) * Ae",
+        "T = mv^2/r",
+        "F = G * (m1 * m2) / r^2"
+      ],
+      "correctAnswer": "T = mdot * Ve + (Pe - Pa) * Ae"
+    },
+    {
+      "_id": "Q202",
+      "quizId": "QZ102",
+      "type": "True/False",
+      "title": "Thrust Equation T/F",
+      "points": 5,
+      "question": "Thrust is directly proportional to the velocity of exhaust gases.",
+      "correctAnswer": "True"
+    },
+    {
+      "_id": "Q203",
+      "quizId": "QZ103",
+      "type": "Long Answer",
+      "title": "Spacecraft Design Challenges",
+      "points": 15,
+      "question": "Describe the primary challenges in designing a spacecraft for long-duration missions."
+    },
+    {
+      "_id": "Q301",
+      "quizId": "QZ103",
+      "type": "Multiple Choice",
+      "title": "Spacecraft Propulsion Systems",
+      "points": 8,
+      "question": "Which of the following is not a type of spacecraft propulsion system?",
+      "choices": [
+        "Chemical Propulsion",
+        "Ion Propulsion",
+        "Solar Sail",
+        "Turbofan Engine"
+      ],
+      "correctAnswer": "Turbofan Engine"
+    },
+    {
+      "_id": "Q401",
+      "quizId": "QZ104",
+      "type": "Fill in the Blank",
+      "title": "Organic Chemistry Basics",
+      "points": 5,
+      "question": "An example of a hydrocarbon with a double bond is ______.",
+      "correctAnswers": ["ethene", "Ethene"]
+    },
+    {
+      "_id": "Q402",
+      "quizId": "QZ104",
+      "type": "Multiple Choice",
+      "title": "Functional Groups",
+      "points": 6,
+      "question": "Which of the following is an alcohol functional group?",
+      "choices": ["-OH", "-COOH", "-NH2", "-C=O"],
+      "correctAnswer": "-OH"
+    },
+    {
+      "_id": "Q501",
+      "quizId": "QZ105",
+      "type": "Long Answer",
+      "title": "Coordination Chemistry Applications",
+      "points": 10,
+      "question": "Explain the role of coordination compounds in industrial catalysis."
+    }
+  ]
