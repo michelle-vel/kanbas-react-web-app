@@ -10,36 +10,31 @@ export default function Dashboard({
   addNewCourse,
   deleteCourse,
   updateCourse,
-  enrollments,
-  handleEnroll,
-  handleUnenroll,
-}: {
+  enrolling, 
+  setEnrolling,
+  updateEnrollment}: 
+  {
   courses: any[];
   course: any;
   setCourse: (course: any) => void;
   addNewCourse: () => void;
   deleteCourse: (course: any) => void;
   updateCourse: () => void;
-  enrollments: { _id: string; user: string; course: string }[];
-  handleEnroll: (userId: string, courseId: string) => void;
-  handleUnenroll: (userId: string, courseId: string) => void;
-}) {
+  enrolling: boolean; setEnrolling: (enrolling: boolean) => void;
+  updateEnrollment: (courseId: string, enrolled: boolean) => void}) {
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const isFaculty = currentUser?.role === "FACULTY";
   const isStudent = currentUser?.role === "STUDENT";
   const navigate = useNavigate();
   const [filterEnabled, setFilter] = useState(true);
 
-  const isEnrolled = (courseId: string) =>
-    enrollments.some(
-      (enrollment) =>
-        enrollment.user === currentUser._id && enrollment.course === courseId
-    );
-
   return (
     <div id="wd-dashboard">
       <h1 id="wd-dashboard-title">
         Dashboard
+        <button onClick={() => setEnrolling(!enrolling)} className="float-end btn btn-primary" >
+          {enrolling ? "My Courses" : "All Courses"}
+        </button>
       </h1>
       <hr />
       {isFaculty && (
@@ -76,7 +71,7 @@ export default function Dashboard({
           />
         </div>
       )}
-      {isStudent && (
+      {/* {isStudent && (
         <div>
           <h5>
             View Enrollments
@@ -90,26 +85,14 @@ export default function Dashboard({
           </h5>
           <hr />
         </div>
-      )}
+      )} */}
       <hr />
       <h2 id="wd-dashboard-published">Published Courses ({courses.length})</h2>
       <hr />
       <div id="wd-dashboard-courses" className="row">
         <div className="row row-cols-1 row-cols-md-5 g-4">
           {courses
-            .filter((course) => {
-              return (
-                !isStudent ||
-                !filterEnabled ||
-                enrollments.some(
-                  (enrollment) =>
-                    enrollment.user === currentUser._id &&
-                    enrollment.course === course._id
-                )
-              );
-            })
             .map((course) => {
-              const userIsEnrolled = isEnrolled(course._id);
               return (
                 <div
                   key={course._id}
@@ -120,6 +103,16 @@ export default function Dashboard({
                     <img src="/images/class1.png" width="100%" height={160} />
                     <div className="card-body">
                       <h5 className="wd-dashboard-course-title card-title">
+                      {enrolling && (
+              <button 
+              onClick={(event) => {
+                event.preventDefault();
+                updateEnrollment(course._id, !course.enrolled);
+              }}
+              className={`btn ${ course.enrolled ? "btn-danger" : "btn-success" } float-end`} >
+                {course.enrolled ? "Unenroll" : "Enroll"}
+              </button>
+            )}
                         {course.name}
                       </h5>
                       <p
@@ -133,9 +126,9 @@ export default function Dashboard({
                           className="btn btn-primary"
                           onClick={(e) => {
                             e.preventDefault();
-                            if (userIsEnrolled) {
+                            // if (userIsEnrolled) {
                               navigate(`/Kanbas/Courses/${course._id}/Home`);
-                            }
+                            // }
                           }}
                         >
                           Go
@@ -164,7 +157,7 @@ export default function Dashboard({
                             </button>
                           </div>
                         )}
-                        {isStudent && (
+                        {/* {isStudent && (
                           <button
                             onClick={(event) => {
                               event.preventDefault();
@@ -178,7 +171,7 @@ export default function Dashboard({
                           >
                             {userIsEnrolled ? "Unenroll" : "Enroll"}
                           </button>
-                        )}
+                        )} */}
                       </div>
                     </div>
                   </div>

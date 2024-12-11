@@ -14,6 +14,8 @@ export default function Modules() {
   const { cid } = useParams();
   const [moduleName, setModuleName] = useState("");
   const { modules } = useSelector((state: any) => state.modulesReducer);
+  const { currentUser } = useSelector((state: any) => state.accountReducer);
+
   const dispatch = useDispatch();
   const saveModule = async (module: any) => {
     await modulesClient.updateModule(module);
@@ -39,13 +41,16 @@ export default function Modules() {
     fetchModules();
   }, []);
 
+  const isFaculty = currentUser?.role === "FACULTY";
 
     return (
       
       <div>
+        
       <div>
       <ModulesControls setModuleName={setModuleName} moduleName={moduleName} 
         addModule={createModuleForCourse} />
+
       <br /><br /><br /><br />
       <ul id="wd-modules" className="list-group rounded-0">
         {modules
@@ -70,11 +75,16 @@ export default function Modules() {
       )}
 
 
-        <ModuleControlButtons
-                moduleId={module._id}
-                deleteModule={(moduleId) => removeModule(moduleId)}
-                editModule={(moduleId) => dispatch(editModule(moduleId))} />
-
+        {isFaculty && (
+                <ModuleControlButtons
+                  moduleId={module._id}
+                  // deleteModule={(moduleId) => {
+                  //   dispatch(deleteModule(moduleId));
+                  // }}
+                  deleteModule={(moduleId) => removeModule(moduleId)}
+                  editModule={(moduleId) => dispatch(editModule(moduleId))}
+                />
+              )}
             </div>
             {module.lessons && (
               <ul className="wd-lessons list-group rounded-0">
