@@ -20,7 +20,7 @@ export default function QuizEditor() {
     useSelector((state: any) => state.quizzesReducer.quizzes) || [];
   const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
 
-  const [name, setName] = useState(existingQuiz ? existingQuiz.name : "");
+  const [name, setName] = useState(existingQuiz ? existingQuiz.name : "New Quiz");
   const [description, setDescription] = useState(
     existingQuiz ? existingQuiz.description : ""
   );

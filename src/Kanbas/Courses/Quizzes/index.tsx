@@ -21,6 +21,7 @@ export default function Quizzes() {
   const quizzes = useSelector((state: any) => state.quizzesReducer.quizzes) || [];
   const { currentUser } = useSelector((state: any) => state.accountReducer);
   const dispatch = useDispatch();
+  const isStudent = currentUser?.role === "STUDENT";  // Check if user is a student
 
     const fetchQuizzes = async () => {
       try {
@@ -67,6 +68,11 @@ export default function Quizzes() {
 
   const toggleContextMenu = (quizId: string) => {
     setActiveContextMenu(activeContextMenu === quizId ? null : quizId);
+  };
+
+  // Handle navigation to the Quiz Preview screen (for students)
+  const handleTakeQuiz = (quizId: string) => {
+    navigate(`/Kanbas/Courses/${cid}/Quizzes/${quizId}/preview`);
   };
 
   return (
@@ -122,7 +128,20 @@ export default function Quizzes() {
                       {quiz.questions} Questions
                     </small>
                   </div>
+                                                  {/* Conditionally render "Take Quiz" button for students */}
+                  {/* this should be included but doesnt work && quiz.status === "Published" */}
+                  {isStudent && (
+                  <button
+                    className="btn btn-primary ms-3"
+                    onClick={() => handleTakeQuiz(quiz._id)}
+                  >
+                    Take Quiz
+                  </button>
+                )}
+
                 </div>
+
+
                 <div className="d-flex align-items-center position-relative">
                   <FaCheckCircle className="text-success me-3 fs-5" />
                   <div className="dropdown">
