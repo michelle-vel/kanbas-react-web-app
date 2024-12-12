@@ -5,6 +5,8 @@ import TrueFalseEditor from "./QuestionsEditors/TrueFalseEditor";
 import LongAnswerEditor from "./QuestionsEditors/LongAnswerEditor";
 import { FaTrash, FaPencilAlt } from "react-icons/fa";
 import questionsData from "../../Database/questions.json";
+import * as questionsClient from "./QuestionsEditors/client"
+import * as quizzesClient from "../Quizzes/client";
 
 export default function QuestionsEditor() {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -21,22 +23,30 @@ export default function QuestionsEditor() {
     setEditingQuestion(null);
   };
 
-  const handleSaveQuestion = (newQuestion: any) => {
-    if (editingQuestion) {
-      setQuestions(
-        questions.map((q) =>
-          q._id === editingQuestion._id ? { ...q, ...newQuestion } : q
-        )
-      );
-    } else {
-      setQuestions([
-        ...questions,
-        { _id: Date.now().toString(), ...newQuestion },
-      ]);
+  const handleSaveQuestion = async (newQuestion: any) => {
+    try {
+      if (editingQuestion) {
+        const updatedQuestion = await questionsClient.updateQuestion({
+          ...editingQuestion,
+          ...newQuestion,
+        });
+        setQuestions(
+          questions.map((q) =>
+            q._id === editingQuestion._id ? updatedQuestion : q
+          )
+        );
+      } else {
+        const createdQuestion = await quizzesClient.createQuestionForQuiz(qid as string, newQuestion);
+        console.log('Created Question:', createdQuestion);
+        setQuestions([...questions, createdQuestion]);
+      }
+      setIsModalOpen(false);
+      setEditingQuestion(null);
+    } catch (error) {
+      console.error("Failed to save question:", error);
     }
-    setIsModalOpen(false);
-    setEditingQuestion(null);
   };
+
 
   const handleEditQuestion = (question: any) => {
     setEditingQuestion(question);
@@ -44,17 +54,27 @@ export default function QuestionsEditor() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteQuestion = (_id: string) => {
-    setQuestions(questions.filter((q) => q._id !== _id));
+  const handleDeleteQuestion = async (_id: string) => {
+    try {
+      await questionsClient.deleteQuestion(_id);
+      setQuestions(questions.filter((q) => q._id !== _id));
+    } catch (error) {
+      console.error("Failed to delete question:", error);
+    }
   };
 
-  useEffect(() => {
-    if (qid) {
-      const quizQuestions = questionsData.filter(
-        (question) => question.quizId === qid
-      );
-      setQuestions(quizQuestions);
+  const fetchQuestions = async () => {
+    try {
+      const questions = await quizzesClient.findQuestionsForQuiz(qid as string);
+      setQuestions(questions);
+    } catch (error) {
+      console.error("Failed to fetch questions:", error);
     }
+  };
+
+
+  useEffect(() => {
+    fetchQuestions();
   }, [qid]);
 
   const handleBackClick = () => {
