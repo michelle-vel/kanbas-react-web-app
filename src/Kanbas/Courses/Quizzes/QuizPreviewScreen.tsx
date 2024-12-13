@@ -39,22 +39,42 @@ export default function QuizPreviewScreen() {
 
   const handleSubmit = async () => {
     try {
-      const currAnswers = Object.entries(answers).map(([questionId, answer]) => ({
-        question: questionId,
-        quiz: qid,
-        user: currentUser._id,
-        answer, // Store the selected answer
-        points: questions.find((q) => q._id === questionId)?.points || 0,
-      }));
-      await answersClient.createAnswers(currAnswers); // Replace with your API client method
-      alert("Answers submitted successfully!");
+      let totalScore = 0;
+      const currAnswers = Object.entries(answers).map(([questionId, answer]) => {
+        // Find the question by ID
+        const question = questions.find((q) => q._id === questionId);
+  
+        // Initialize the score for this answer
+        let points = question?.points || 0;
+  
+        // Check if it's not a long answer and if the answer is correct
+        if (question?.type !== "Long Answer" && answer === question.correctChoice) {
+          totalScore += points; // Add points to total score if correct
+        }
+  
+        // Return the answer object to be sent to the backend
+        return {
+          question: questionId,
+          quiz: qid,
+          user: currentUser._id,
+          answer,
+          points,
+        };
+      });
+  
+      // Send answers to the server
+      await answersClient.createAnswers(currAnswers);
+      
+      alert(`Answers submitted successfully! Your total score is: ${totalScore}`);
+      
+      // Navigate to quiz page
       navigate(`/Kanbas/Courses/${cid}/Quizzes`);
     } catch (error) {
       console.error("Failed to submit answers:", error);
       alert("Failed to submit answers.");
     }
   };
-
+  
 
   return (
     <div className="container mt-4">

@@ -7,7 +7,7 @@ interface TrueFalseEditorProps {
     title: string;
     points: number;
     question: string;
-    correctAnswer: string;
+    correctChoice: string;
   };
 }
 
@@ -20,7 +20,7 @@ export default function TrueFalseEditor({
   const [points, setPoints] = useState<number>(initialData?.points || 0);
   const [question, setQuestion] = useState(initialData?.question || "");
   const [isTrue, setIsTrue] = useState<boolean>(
-    initialData?.correctAnswer === "True" || true
+    initialData?.correctChoice === "True" || true
   );
 
   const handleSave = () => {
@@ -29,7 +29,7 @@ export default function TrueFalseEditor({
       title,
       points,
       question,
-      correctAnswer: isTrue ? "True" : "False",
+      correctChoice: isTrue ? "True" : "False",
     };
     onSave(newQuestion);
   };
