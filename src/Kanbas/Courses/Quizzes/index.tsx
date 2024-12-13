@@ -141,7 +141,7 @@ export default function Quizzes() {
 
                 </div>
 
-
+                {isFaculty && (
                 <div className="d-flex align-items-center position-relative">
                   <FaCheckCircle className="text-success me-3 fs-5" />
                   <div className="dropdown">
@@ -184,6 +184,7 @@ export default function Quizzes() {
                     </ul>
                   </div>
                 </div>
+                )}
               </li>
             ))}
           </ul>

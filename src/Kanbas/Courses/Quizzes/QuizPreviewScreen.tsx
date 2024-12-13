@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import * as quizzesClient from "../Quizzes/client"; // Ensure correct path
 import { useSelector } from "react-redux";
+import * as answersClient from "./answersClient"; // Ensure correct path
 
 export default function QuizPreviewScreen() {
   const [questions, setQuestions] = useState<any[]>([]); // Store questions fetched from the API
@@ -36,11 +37,24 @@ export default function QuizPreviewScreen() {
     });
   };
 
-  // Handle form submission (Currently doesn't do anything)
-  const handleSubmit = () => {
-    console.log("User answers submitted:", answers);
-    // You can send the answers to the backend to be saved
+  const handleSubmit = async () => {
+    try {
+      const currAnswers = Object.entries(answers).map(([questionId, answer]) => ({
+        question: questionId,
+        quiz: qid,
+        user: currentUser._id,
+        answer, // Store the selected answer
+        points: questions.find((q) => q._id === questionId)?.points || 0,
+      }));
+      await answersClient.createAnswers(currAnswers); // Replace with your API client method
+      alert("Answers submitted successfully!");
+      navigate(`/Kanbas/Courses/${cid}/Quizzes`);
+    } catch (error) {
+      console.error("Failed to submit answers:", error);
+      alert("Failed to submit answers.");
+    }
   };
+
 
   return (
     <div className="container mt-4">
