@@ -20,11 +20,13 @@ export default function QuizEditor() {
     useSelector((state: any) => state.quizzesReducer.quizzes) || [];
   const existingQuiz = quizzes.find((quiz: any) => quiz._id === qid);
 
-  const [name, setName] = useState(existingQuiz ? existingQuiz.name : "New Quiz");
+  const [name, setName] = useState(
+    existingQuiz ? existingQuiz.name : "New Quiz"
+  );
   const [description, setDescription] = useState(
     existingQuiz ? existingQuiz.description : ""
   );
-  const [points, setPoints] = useState(existingQuiz ? existingQuiz.points : 0);
+  const [points, setPoints] = useState(existingQuiz ? existingQuiz.points : 0); // Updated later dynamically
   const [status, setStatus] = useState(
     existingQuiz ? existingQuiz.status : "Draft"
   );
@@ -38,14 +40,34 @@ export default function QuizEditor() {
     existingQuiz ? existingQuiz.availableUntilDate : ""
   );
   const [shuffleAnswers, setShuffleAnswers] = useState(
-    existingQuiz ? existingQuiz.shuffleAnswers : false
+    existingQuiz ? existingQuiz.shuffleAnswers : true
   );
   const [timeLimit, setTimeLimit] = useState(
-    existingQuiz ? existingQuiz.timeLimit : ""
+    existingQuiz && existingQuiz.timeLimit !== undefined
+      ? existingQuiz.timeLimit
+      : 20
   );
   const [multipleAttempts, setMultipleAttempts] = useState(
     existingQuiz ? existingQuiz.multipleAttempts : false
   );
+  const [quizType, setQuizType] = useState(
+    existingQuiz ? existingQuiz.quizType : "Graded Quiz"
+  );
+  const [assignmentGroup, setAssignmentGroup] = useState(
+    existingQuiz ? existingQuiz.assignmentGroup : "Quizzes"
+  );
+  const [accessCode, setAccessCode] = useState(
+    existingQuiz ? existingQuiz.accessCode : ""
+  );
+  const [oneQuestionAtATime, setOneQuestionAtATime] = useState(
+    existingQuiz ? existingQuiz.oneQuestionAtATime : true
+  );
+  const [webcamRequired, setWebcamRequired] = useState(
+    existingQuiz ? existingQuiz.webcamRequired : false
+  );
+  const [lockQuestionsAfterAnswering, setLockQuestionsAfterAnswering] =
+    useState(existingQuiz ? existingQuiz.lockQuestionsAfterAnswering : false);
+
   const handleNavigateToQuestions = () => {
     navigate(`/Kanbas/Courses/${cid}/Quizzes/${qid || "new"}/Questions`);
   };
@@ -65,6 +87,12 @@ export default function QuizEditor() {
       shuffleAnswers,
       timeLimit,
       multipleAttempts,
+      quizType,
+      assignmentGroup,
+      accessCode,
+      oneQuestionAtATime,
+      webcamRequired,
+      lockQuestionsAfterAnswering,
       course: cid,
     };
 
@@ -125,6 +153,23 @@ export default function QuizEditor() {
           />
         </div>
 
+        <div className="mb-3">
+          <label htmlFor="quizType" className="form-label">
+            Quiz Type
+          </label>
+          <select
+            className="form-select"
+            id="quizType"
+            value={quizType}
+            onChange={(e) => setQuizType(e.target.value)}
+          >
+            <option value="Graded Quiz">Graded Quiz</option>
+            <option value="Practice Quiz">Practice Quiz</option>
+            <option value="Graded Survey">Graded Survey</option>
+            <option value="Ungraded Survey">Ungraded Survey</option>
+          </select>
+        </div>
+
         <div className="row mb-3">
           <div className="col-md-4">
             <label htmlFor="quizPoints" className="form-label">
@@ -136,6 +181,7 @@ export default function QuizEditor() {
               id="quizPoints"
               value={points}
               onChange={(e) => setPoints(Number(e.target.value))}
+              readOnly
             />
           </div>
           <div className="col-md-4">
@@ -152,47 +198,21 @@ export default function QuizEditor() {
               <option value="Published">Published</option>
             </select>
           </div>
-        </div>
-
-        <div className="row mb-3">
-          <div className="col-md-6">
-            <label htmlFor="dueDate" className="form-label">
-              Due Date
+          <div className="col-md-4">
+            <label htmlFor="assignmentGroup" className="form-label">
+              Assignment Group
             </label>
-            <input
-              type="datetime-local"
-              className="form-control"
-              id="dueDate"
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-            />
-          </div>
-          <div className="col-md-6">
-            <label htmlFor="availableFrom" className="form-label">
-              Available From
-            </label>
-            <input
-              type="datetime-local"
-              className="form-control"
-              id="availableFrom"
-              value={availableFrom}
-              onChange={(e) => setAvailableFrom(e.target.value)}
-            />
-          </div>
-        </div>
-
-        <div className="row mb-3">
-          <div className="col-md-6">
-            <label htmlFor="availableUntil" className="form-label">
-              Available Until
-            </label>
-            <input
-              type="datetime-local"
-              className="form-control"
-              id="availableUntil"
-              value={availableUntil}
-              onChange={(e) => setAvailableUntil(e.target.value)}
-            />
+            <select
+              className="form-select"
+              id="assignmentGroup"
+              value={assignmentGroup}
+              onChange={(e) => setAssignmentGroup(e.target.value)}
+            >
+              <option value="Quizzes">Quizzes</option>
+              <option value="Exams">Exams</option>
+              <option value="Assignments">Assignments</option>
+              <option value="Project">Project</option>
+            </select>
           </div>
         </div>
 
@@ -222,6 +242,45 @@ export default function QuizEditor() {
               Allow Multiple Attempts
             </label>
           </div>
+          <div className="form-check mb-2">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="oneQuestionAtATime"
+              checked={oneQuestionAtATime}
+              onChange={(e) => setOneQuestionAtATime(e.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="oneQuestionAtATime">
+              One Question At a Time
+            </label>
+          </div>
+          <div className="form-check mb-2">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="webcamRequired"
+              checked={webcamRequired}
+              onChange={(e) => setWebcamRequired(e.target.checked)}
+            />
+            <label className="form-check-label" htmlFor="webcamRequired">
+              Webcam Required
+            </label>
+          </div>
+          <div className="form-check mb-2">
+            <input
+              type="checkbox"
+              className="form-check-input"
+              id="lockQuestionsAfterAnswering"
+              checked={lockQuestionsAfterAnswering}
+              onChange={(e) => setLockQuestionsAfterAnswering(e.target.checked)}
+            />
+            <label
+              className="form-check-label"
+              htmlFor="lockQuestionsAfterAnswering"
+            >
+              Lock Questions After Answering
+            </label>
+          </div>
           <div className="row mt-2">
             <div className="col-md-4">
               <label htmlFor="timeLimit" className="form-label">
@@ -229,10 +288,23 @@ export default function QuizEditor() {
               </label>
               <input
                 type="number"
+                defaultValue={20}
                 className="form-control"
                 id="timeLimit"
                 value={timeLimit}
                 onChange={(e) => setTimeLimit(e.target.value)}
+              />
+            </div>
+            <div className="col-md-4">
+              <label htmlFor="accessCode" className="form-label">
+                Access Code
+              </label>
+              <input
+                type="text"
+                className="form-control"
+                id="accessCode"
+                value={accessCode}
+                onChange={(e) => setAccessCode(e.target.value)}
               />
             </div>
           </div>
